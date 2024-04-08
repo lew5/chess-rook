@@ -1,7 +1,7 @@
 <?php
 
 
-function drawTable($length, $height)
+function drawTable($length, $height, $steps)
 {
     $rook = rookIcon("#fff", "#1f2937");
     for ($i = 1; $i <= $height; $i++) {
@@ -14,12 +14,12 @@ function drawTable($length, $height)
                 'x' => 5,
                 'y' => 5,
             ];
-            $allowed_cells = allowedCells($current_position['x'], $current_position['y'], $length, $height);
+            $allowed_cells = allowedCells($current_position['x'], $current_position['y'], $length, $height, $steps);
 
             if (($i == $current_position['y']) && (in_array($j, $allowed_cells['x']))) {
-                print("<td class='bg-green-500 w-16 h-16 rounded-3xl'></td>");
+                print("<td class='bg-green-300 w-16 h-16 rounded-3xl'></td>");
             } elseif (($j == $current_position['x']) && (in_array($i, $allowed_cells['y']))) {
-                print("<td class='bg-green-500 w-16 h-16 rounded-3xl'></td>");
+                print("<td class='bg-green-300 w-16 h-16 rounded-3xl'></td>");
             } else {
                 if ($isEven) {
                     if ($i == $current_position['y'] && $j == $current_position['x']) {
@@ -52,42 +52,35 @@ function rookIcon($fill, $stroke)
 
 
 
-function allowedCells($x, $y, $length, $height)
+
+
+function allowedCells($x, $y, $length, $height, $steps)
 {
-    $allowed_x = [$x - 1, $x + 1];
-    $allowed_y = [$y - 1, $y + 1];
+
     $allowed_cells = [];
 
-    if ($allowed_x[0] < 1) {
-        array_shift($allowed_x);
-    }
-    if (isset($allowed_x[0])) {
-        $allowed_cells['x'][] = $allowed_x[0];
-    }
+    for ($i = 1; $i <= $steps; $i++) {
 
-    if (isset($allowed_x[1]) && $allowed_x[1] > $length) {
-        array_pop($allowed_x);
-    }
-    if (isset($allowed_x[1])) {
-        $allowed_cells['x'][] = $allowed_x[1];
-    }
+        if ($x - $i > 0) {
+            $allowed_cells['x'][] = $x - $i;
+        }
+        if ($x + $i <= $length) {
+            $allowed_cells['x'][] = $x + $i;
+        }
 
-    if ($allowed_y[0] < 1) {
-        array_shift($allowed_y);
-    }
-    if (isset($allowed_y[0])) {
-        $allowed_cells['y'][] = $allowed_y[0];
-    }
 
-    if (isset($allowed_y[1]) && $allowed_y[1] > $height) {
-        array_pop($allowed_y);
-    }
-    if (isset($allowed_y[1])) {
-        $allowed_cells['y'][] = $allowed_y[1];
+        if ($y - $i > 0) {
+            $allowed_cells['y'][] = $y - $i;
+        }
+
+        if ($y + $i <= $height) {
+            $allowed_cells['y'][] = $y + $i;
+        }
     }
 
     return $allowed_cells;
 }
+
 
 ?>
 
@@ -106,7 +99,7 @@ function allowedCells($x, $y, $length, $height)
         <table class="text-center">
             <tbody>
                 <?php
-                drawTable(9, 9);
+                drawTable(9, 9, 9);
                 ?>
             </tbody>
         </table>
