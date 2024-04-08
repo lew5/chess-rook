@@ -7,38 +7,40 @@ function drawTable($length, $height, $steps)
     for ($i = 1; $i <= $height; $i++) {
         print('<tr>');
         for ($j = 1; $j <= $length; $j++) {
-            $isEvenRow = ($i % 2) == 0;
-            $isEvenColumn = ($j % 2) == 0;
-            $isEven = $isEvenRow && $isEvenColumn || !$isEvenRow && !$isEvenColumn;
             $current_position = [
-                'x' => 5,
-                'y' => 5,
+                'x' => 1,
+                'y' => 1,
             ];
             $allowed_cells = allowedCells($current_position['x'], $current_position['y'], $length, $height, $steps);
-
-            if (($i == $current_position['y']) && (in_array($j, $allowed_cells['x']))) {
-                print("<td class='bg-green-300 w-16 h-16 rounded-3xl'></td>");
-            } elseif (($j == $current_position['x']) && (in_array($i, $allowed_cells['y']))) {
-                print("<td class='bg-green-300 w-16 h-16 rounded-3xl'></td>");
-            } else {
-                if ($isEven) {
-                    if ($i == $current_position['y'] && $j == $current_position['x']) {
-                        print("<td class='text-red-300 bg-gray-600 w-16 h-16 rounded-lg text-3xl flex justify-center items-center'>$rook</td>");
-                    } else {
-                        print("<td class='text-red-300 bg-gray-600 w-16 h-16 rounded-lg'></td>");
-                    }
-                } else {
-                    if ($i == $current_position['y'] && $j == $current_position['x']) {
-                        print("<td class='text-red-300 bg-gray-200 w-16 h-16 rounded-lg text-3xl flex justify-center items-center'>$rook</td>");
-                    } else {
-                        print("<td class='text-red-300 bg-gray-200 w-16 h-16 rounded-lg'></td>");
-                    }
-                }
-            }
+            $content = getCellContent($i, $j, $current_position, $allowed_cells, $rook);
+            print("<td class='$content[0]'>$content[1]</td>");
         }
         print('</tr>');
     }
 }
+
+function getCellContent($i, $j, $current_position, $allowed_cells, $rook)
+{
+    $isEvenRow = ($i % 2) == 0;
+    $isEvenColumn = ($j % 2) == 0;
+    $isEven = $isEvenRow && $isEvenColumn || !$isEvenRow && !$isEvenColumn;
+    $bgClass = $isEven ? 'bg-gray-600' : 'bg-gray-200';
+    $tdClass = "$bgClass w-16 h-16 rounded-lg";
+    $content = "";
+
+    if ($i == $current_position['y'] && $j == $current_position['x']) {
+        $content = "<div class='flex justify-center items-center w-full h-full'>$rook</div>";
+    } else {
+        if (($i == $current_position['y']) && (in_array($j, $allowed_cells['x']))) {
+            $content = "<div class='flex justify-center items-center w-full h-full'><div class='bg-green-300 rounded-3xl h-3/5 w-3/5'></div></div>";
+        } elseif (($j == $current_position['x']) && (in_array($i, $allowed_cells['y']))) {
+            $content = "<div class='flex justify-center items-center w-full h-full'><div class='bg-green-300 rounded-3xl h-3/5 w-3/5'></div></div>";
+        }
+    }
+
+    return [$tdClass, $content];
+}
+
 
 function rookIcon($fill, $stroke)
 {
@@ -57,7 +59,7 @@ function rookIcon($fill, $stroke)
 function allowedCells($x, $y, $length, $height, $steps)
 {
 
-    $allowed_cells = [];
+    $allowed_cells = ['x' => [], 'y' => []];
 
     for ($i = 1; $i <= $steps; $i++) {
 
