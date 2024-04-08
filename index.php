@@ -8,8 +8,8 @@ function drawTable($length, $height, $steps)
         print('<tr>');
         for ($j = 1; $j <= $length; $j++) {
             $current_position = [
-                'x' => 1,
-                'y' => 1,
+                'x' => 5,
+                'y' => 5,
             ];
             $allowed_cells = allowedCells($current_position['x'], $current_position['y'], $length, $height, $steps);
             $content = getCellContent($i, $j, $current_position, $allowed_cells, $rook);
